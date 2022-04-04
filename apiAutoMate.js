@@ -5,10 +5,10 @@ let mysql = require("mysql2");
 
 let connection = mysql.createConnection(
     {
-        host         : "localhost",
-        user         : "root",
-        password     : "",
-        database     : ""
+        host         : "automate.cuu638eryjoo.us-east-1.rds.amazonaws.com",
+        user         : "admin",
+        password     : "TomasTurbo",
+        database     : "autoMate"
     });
 
 connection.connect(function(error){
