@@ -2,6 +2,7 @@ let express = require("express");
 let app = express();
 let cors = require('cors')
 let mysql = require("mysql2");
+let puerto = process.env.PORT || 3000;
 
 let connection = mysql.createConnection(
     {
@@ -23,5 +24,23 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// app.get("/prueba", 
+//         function(request, response) { 
+//             let sql;
+//             sql = "SELECT * FROM user";
+    
+//             connection.query(sql, function (err, result)
+//             {
+//                 if (err) {
+//                     console.log(err);
+//                 }
+//                 else {
+//                     response.send(result);
+//                 }
+//             })
+//         }
+//         );
 
-app.listen(3000);
+
+
+app.listen(puerto);
