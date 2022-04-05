@@ -24,22 +24,22 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// app.get("/prueba", 
-//         function(request, response) { 
-//             let sql;
-//             sql = "SELECT * FROM user";
+app.get("/prueba", 
+        function(request, response) { 
+            let sql;
+            sql = "SELECT * FROM user";
     
-//             connection.query(sql, function (err, result)
-//             {
-//                 if (err) {
-//                     console.log(err);
-//                 }
-//                 else {
-//                     response.send(result);
-//                 }
-//             })
-//         }
-//         );
+            connection.query(sql, function (err, result)
+            {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    response.send(result);
+                }
+            })
+        }
+        );
 
 
 
