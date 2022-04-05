@@ -71,4 +71,27 @@ app.post("/registro",
         );
 
 
+app.post("/login", 
+        function(request, response)
+        { 
+            console.log(request.body);
+
+            let sql = `SELECT id_user, name, last_name, email, kilometers_car, year_car FROM user 
+                      WHERE email= "${request.body.email}" AND password= "${request.body.password}"`
+
+            console.log(sql)
+    
+            connection.query(sql, function (err, result)
+            {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    response.send(result);
+                }
+            })
+        }
+        );
+
+        
 app.listen(puerto);
