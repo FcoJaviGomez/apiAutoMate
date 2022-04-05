@@ -42,5 +42,33 @@ app.get("/prueba",
         );
 
 
+app.post("/registro", 
+        function(request, response)
+        {
+            console.log(request.body);
+
+            let sql = `INSERT INTO user (name, last_name, email, password, kilometers_car, year_car, 
+                       provisional_password, provisional_date) VALUES ("${request.body.name}", 
+                       "${request.body.last_name}", "${request.body.email}", "${request.body.password}", 
+                       ${request.body.kilometers_car}, ${request.body.year_car}, 
+                       "${request.body.provisional_password}", "${request.body.provisional_date}")`
+                        
+            console.log(sql);                      
+            connection.query(sql, function (err, result)
+            {
+                if (err) 
+                    console.log(err);
+                else 
+                {
+                    console.log(result);
+                    if (result.insertId)
+                        response.send(String(result.insertId));
+                    else
+                        response.send("-1");
+                }
+            })
+        }
+        );
+
 
 app.listen(puerto);
