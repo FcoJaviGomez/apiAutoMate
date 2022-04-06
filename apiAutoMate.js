@@ -93,5 +93,24 @@ app.post("/login",
         }
         );
 
+app.get('/home2',
+        function(req, res) {
+            
+            let id= req.query.id_tips
+            let sql;
+            sql='SELECT text FROM tips WHERE id_tips = '+ id;
+
+            connection.query(sql, (err, result)=>{
+
+                if(err)
+                {
+                    console.log(err)
+                }
+                else
+                {
+                    res.send(result)
+                }
+            })
+        })
         
 app.listen(puerto);
