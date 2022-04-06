@@ -213,7 +213,7 @@ app.get('/mantenimientoHome', (request, response) => {
     })
 })
 
-app.delete('mantenimiento', (request, response) => {
+app.delete('/mantenimiento', (request, response) => {
     console.log(request.body);
     let sql = `DELETE FROM maintenance WHERE id_maintenance = ${request.body.id_maintenance}`
     console.log(sql);
