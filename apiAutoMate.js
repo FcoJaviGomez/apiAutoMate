@@ -92,6 +92,8 @@ app.post("/login",
             })
         }
         );
+
+
 app.get("/usuario",
          function(request, response)
          {
@@ -99,7 +101,7 @@ app.get("/usuario",
              if (request.query.id == null)
                sql = "SELECT * FROM user ";
             else
-            sql = "SELECT * FROM user WHERE id_user=" + request.query.id;
+                sql = "SELECT * FROM user WHERE id_user=" + request.query.id;
 
             connection.query(sql, function (err, result)
             {
@@ -112,6 +114,7 @@ app.get("/usuario",
             })
          }
          );
+
       
 app.put("/usuario",
         function(request, response)
@@ -146,4 +149,6 @@ app.put("/usuario",
             })
         }
 );
+
+
 app.listen(puerto);
