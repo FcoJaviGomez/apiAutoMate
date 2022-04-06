@@ -92,25 +92,58 @@ app.post("/login",
             })
         }
         );
+app.get("/usuario",
+         function(request, response)
+         {
+             let sql;
+             if (request.query.id == null)
+               sql = "SELECT * FROM user ";
+            else
+            sql = "SELECT * FROM user WHERE id_user=" + request.query.id;
 
-app.get('/home-logged',
-        function(req, res) {
-            
-            let id= req.query.id_tips
-            let sql;
-            sql='SELECT text FROM tips WHERE id_tips = '+ id;
-
-            connection.query(sql, (err, result)=>{
-
-                if(err)
-                {
-                    console.log(err)
-                }
+            connection.query(sql, function (err, result)
+            {
+                if (err)
+                   console.log(err);
                 else
                 {
-                    res.send(result)
+                    response.send(result);
                 }
             })
-        })
-        
+         }
+         );
+      
+app.put("/usuario",
+        function(request, response)
+        {
+            console.log(request.body);
+            let params = [request.body.name,
+                          request.body.last_name,
+                          request.body.email,
+                          request.body.password,
+                          request.body.kilometers_car,
+                          request.body.year_car,
+                          request.body.provisional_password,
+                          request.body.provisional_date,
+                          request.body.id_user]
+            let sql = "UPDATE user SET name = COALESCE(?, name) , " +
+                      "last_name = COALESCE(?, last_name) , " +
+                      "email = COALESCE(?, email) , " +
+                      "password = COALESCE(?, password) , " +
+                      "kilometers_car = COALESCE(?, kilometers_car) , " +
+                      "year_car = COALESCE(?, year_car) , " +
+                      "provisional_password = COALESCE(?, provisional_password) , " +
+                      "provisional_date = COALESCE(?, provisional_date) WHERE id_user = ?";
+            console.log(sql);
+            connection.query(sql, params, function (err, result)
+            {
+                if (err)
+                   console.log(err);
+                else
+                {
+                    response.send(result);
+                }
+            })
+        }
+);
 app.listen(puerto);
