@@ -93,7 +93,7 @@ app.post("/login",
         }
         );
 
-app.get('/home2',
+app.get('/home-logged',
         function(req, res) {
             
             let id= req.query.id_tips
