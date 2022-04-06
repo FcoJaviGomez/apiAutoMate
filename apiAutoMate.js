@@ -166,8 +166,11 @@ app.get("/gastos",
 
 app.get('/home-logged',
     function (req, res) {
+        
+        let id= parseInt(Math.random() * 10);
+        
+        console.log(id)
 
-        let id = req.query.id_tips
         let sql;
         sql = 'SELECT text FROM tips WHERE id_tips = ' + id;
 
@@ -177,6 +180,8 @@ app.get('/home-logged',
                 console.log(err)
             }
             else {
+
+                console.log(result)
                 res.send(result)
             }
         })
