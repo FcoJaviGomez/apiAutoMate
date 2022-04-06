@@ -93,5 +93,30 @@ app.post("/login",
         }
         );
 
-        
+
+app.get("/gastos", 
+        function(request, response)
+        { 
+            let sql;
+            if (request.query.id_user != null && request.query.type != null)
+                sql = `SELECT type, SUM(cost) FROM maintenance WHERE id_user =${request.query.id_user} 
+                       AND type = "${request.query.type}"`;
+            else
+                sql = `SELECT SUM(cost) FROM maintenance WHERE id_user = ${request.query.id_user}`;
+            
+            console.log(sql)
+    
+            connection.query(sql, function (err, result)
+            {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    response.send(result);
+                }
+            })
+        }
+        );
+
+                
 app.listen(puerto);
