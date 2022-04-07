@@ -166,9 +166,9 @@ app.get("/gastos",
 
 app.get('/home-logged',
     function (req, res) {
-        
-        let id= parseInt(Math.random() * 10);
-        
+
+        let id = parseInt(Math.random() * 10);
+
         console.log(id)
 
         let sql;
@@ -235,10 +235,10 @@ app.post("/mantenimiento", (request, response) => {
     console.log(request.body);
 
     let sql = `INSERT INTO maintenance (id_user, name, type, subtype, subsubtype, description, cost, 
-                       stard_date, end_date) VALUES ("${request.body.id_user}", 
+                       start_date, end_date) VALUES ("${request.body.id_user}", 
                        "${request.body.name}", "${request.body.type}", "${request.body.subtype}", 
-                       ${request.body.subsubtype}, ${request.body.description}, 
-                       "${request.body.cost}", "${request.body.stard_date}", "${request.body.end_date}")`
+                       "${request.body.subsubtype}", "${request.body.description}", 
+                       ${request.body.cost}, "${request.body.start_date}", "${request.body.end_date}")`
 
     console.log(sql);
     connection.query(sql, function (err, result) {
