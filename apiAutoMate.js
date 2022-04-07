@@ -232,29 +232,130 @@ app.delete('/mantenimiento', (request, response) => {
 })
 
 app.post("/mantenimiento", (request, response) => {
-    console.log(request.body);
 
-    let sql = `INSERT INTO maintenance (id_user, name, type, subtype, subsubtype, description, cost, 
-                       start_date, end_date) VALUES ("${request.body.id_user}", 
-                       "${request.body.name}", "${request.body.type}", "${request.body.subtype}", 
-                       "${request.body.subsubtype}", "${request.body.description}", 
-                       ${request.body.cost}, "${request.body.start_date}", "${request.body.end_date}")`
+    console.log("aquiaaaaaaaaaaaaaaa", request.body)
+    let { id_user, name, type, subtype, subsubtype, description, cost } = request.body;
+    type = (type.toLowerCase()).replace(/\s+/g, '');
+    subtype = (subtype.toLowerCase()).replace(/\s+/g, '');
+    subsubtype = (subsubtype.toLowerCase()).replace(/\s+/g, '');
+    let typeString = (type.toLowerCase() + subtype.toLowerCase() + subsubtype.toLowerCase()).replace(/\s+/g, '');
 
-    console.log(sql);
-    connection.query(sql, function (err, result) {
+    let today = new Date();
+    let end_date;
+    let data;
+    let data_type;
+    let kilometers_car;
+    let year_car;
+
+
+    let params = [typeString]
+    let sql = 'SELECT * FROM autoMate.maintenance_data WHERE type=?'
+
+    connection.query(sql, params, function (err, result) {
         if (err)
             console.log(err);
         else {
-            console.log(result);
-            if (result.insertId)
-                response.send(String(result.insertId));
-            else
-                response.send("-1");
+            console.log(result)
+            data = result[0].data
+            data_type = result[0].data_type
+
+            if (result.length !== 0) {
+                if (data_type === "Dias") {
+                    end_date = calculoEndDayDays(today, data)
+                    console.log("dias listo", end_date)
+
+                    let params3 = [id_user, name, type, subtype, subsubtype, description, cost, today, end_date]
+                    let sql3 = 'INSERT INTO maintenance (id_user, name, type, subtype, subsubtype, description, cost, start_date, end_date) VALUES (?,?,?,?,?,?,?,?,?)'
+                    console.log(params)
+
+                    connection.query(sql3, params3, function (err, result) {
+                        if (err)
+                            console.log(err);
+                        else {
+                            console.log(result);
+                            if (result.insertId)
+                                response.send(String(result.insertId));
+                            else
+                                response.send("-1");
+                        }
+                    })
+                }
+                else {
+                    let params2 = [id_user]
+                    let sql2 = 'SELECT kilometers_car, year_car FROM autoMate.user WHERE id_user=?'
+
+                    connection.query(sql2, params2, function (err, result) {
+
+                        if (err)
+                            console.log(err);
+                        else {
+                            kilometers_car = result[0].kilometers_car
+                            year_car = result[0].year_car
+                            if (data_type === "Km") {
+                                end_date = calculoEndDayKm(today, kilometers_car, data)
+                            }
+                            else {
+                                end_date = calculoEndDayITV(today, year_car)
+                            }
+
+                            console.log(end_date)
+                            console.log(today)
+                            let params4 = [id_user, name, type, subtype, subsubtype, description, cost, today, end_date]
+                            let sql4 = 'INSERT INTO maintenance (id_user, name, type, subtype, subsubtype, description, cost, start_date, end_date) VALUES (?,?,?,?,?,?,?,?,?)'
+                            console.log(params4)
+
+                            connection.query(sql4, params4, function (err, result) {
+                                if (err)
+                                    console.log(err);
+                                else {
+                                    console.log(result);
+                                    if (result.insertId)
+                                        response.send(String(result.insertId));
+                                    else
+                                        response.send("-1");
+                                }
+                            })
+                        }
+                    })
+                }
+                console.log("hemos calculado fecha final")
+            }
         }
     })
 }
 );
 
 
+function calculoEndDayKm(today, kilometersWeek, kilometersManteinance) {
+    let endDay = new Date(today.toDateString())
+    let kilometersDay = Math.round(kilometersWeek / 7)
+    let dayNum = Math.round(kilometersManteinance / kilometersDay)
+
+    endDay.setDate(today.getDate() + dayNum)
+    return endDay
+
+}
+
+function calculoEndDayDays(today, dayNum) {
+    let endDay = new Date(today.toDateString())
+    endDay.setDate(today.getDate() + dayNum)
+    return endDay
+}
+
+function calculoEndDayITV(today, year_car) {
+    let endDay = new Date(today.toDateString())
+
+    if (today.getFullYear() >= year_car && year_car > today.getFullYear() - 4) {
+        endDay.setDate(today.getDate() + 1460)
+    }
+    else if (today.getFullYear() >= year_car && year_car < today.getFullYear() - 4 && year_car > today.getFullYear() - 10) {
+        endDay.setDate(today.getDate() + 730)
+    }
+    else {
+        endDay.setDate(today.getDate() + 365)
+    }
+
+    return endDay
+}
 
 app.listen(puerto);
