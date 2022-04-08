@@ -46,11 +46,13 @@ app.post("/registro",
     function (request, response) {
         console.log(request.body);
 
+        
+
         let sql = `INSERT INTO user (name, last_name, email, password, kilometers_car, year_car, 
                        provisional_password, provisional_date) VALUES ("${request.body.name}", 
                        "${request.body.last_name}", "${request.body.email}", "${request.body.password}", 
                        ${request.body.kilometers_car}, ${request.body.year_car}, 
-                       "${request.body.provisional_password}", "${request.body.provisional_date}")`
+                       "${rString}", "${request.body.provisional_date}")`
 
         console.log(sql);
         connection.query(sql, function (err, result) {
@@ -111,6 +113,9 @@ app.get("/usuario",
 app.put("/usuario",
     function (request, response) {
         console.log(request.body);
+
+
+
         let params = [request.body.name,
         request.body.last_name,
         request.body.email,
@@ -120,6 +125,9 @@ app.put("/usuario",
         request.body.provisional_password,
         request.body.provisional_date,
         request.body.id_user]
+
+        console.log(request.body.provisional_password)
+
         let sql = "UPDATE user SET name = COALESCE(?, name) , " +
             "last_name = COALESCE(?, last_name) , " +
             "email = COALESCE(?, email) , " +
@@ -324,6 +332,38 @@ app.post("/mantenimiento", (request, response) => {
     })
 }
 );
+
+app.put('/recuperacion',
+    (req, res) => {
+
+        console.log(req.body)
+
+        function randomString(length, chars) {
+            var result = '';
+            for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+            return result;
+        }
+        let rString = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@?');
+        
+        console.log(rString)
+
+        let sql = `UPDATE user SET provisional_password = "${rString}", password = "${rString}" WHERE email= "${req.body.email}"`
+
+        console.log(sql)
+
+        connection.query(sql, (err, result)=>{
+
+            if(err){
+                console.log(err);
+            }
+            else{
+                console.log(result);
+                res.send(result);
+                
+            }
+        })
+    }
+)
 
 
 function calculoEndDayKm(today, kilometersWeek, kilometersManteinance) {
