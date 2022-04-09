@@ -236,6 +236,7 @@ app.post("/mantenimiento", (request, response) => {
     console.log("aquiaaaaaaaaaaaaaaa", request.body)
     let { id_user, name, type, subtype, subsubtype, description, cost } = request.body;
     type = (type.toLowerCase()).replace(/\s+/g, '');
+    console.log("type", type)
     subtype = (subtype.toLowerCase()).replace(/\s+/g, '');
     subsubtype = (subsubtype.toLowerCase()).replace(/\s+/g, '');
     let typeString = (type.toLowerCase() + subtype.toLowerCase() + subsubtype.toLowerCase()).replace(/\s+/g, '');
@@ -246,7 +247,7 @@ app.post("/mantenimiento", (request, response) => {
     let data_type;
     let kilometers_car;
     let year_car;
-
+    console.log(today);
 
     let params = [typeString]
     let sql = 'SELECT * FROM autoMate.maintenance_data WHERE type=?'
@@ -258,6 +259,7 @@ app.post("/mantenimiento", (request, response) => {
             console.log(result)
             data = result[0].data
             data_type = result[0].data_type
+            console.log("data_type", data_type);
 
             if (result.length !== 0) {
                 if (data_type === "Dias") {
@@ -266,7 +268,7 @@ app.post("/mantenimiento", (request, response) => {
 
                     let params3 = [id_user, name, type, subtype, subsubtype, description, cost, today, end_date]
                     let sql3 = 'INSERT INTO maintenance (id_user, name, type, subtype, subsubtype, description, cost, start_date, end_date) VALUES (?,?,?,?,?,?,?,?,?)'
-                    console.log(params)
+                    console.log(params3)
 
                     connection.query(sql3, params3, function (err, result) {
                         if (err)
@@ -280,6 +282,28 @@ app.post("/mantenimiento", (request, response) => {
                         }
                     })
                 }
+
+                else if (data_type === null) {
+                    console.log("holaaa", request.body);
+                    end_date = request.body.end_date
+                    console.log(end_date);
+                    let params7 = [id_user, name, type, subtype, subsubtype, description, cost, today, end_date]
+                    let sql7 = 'INSERT INTO maintenance (id_user, name, type, subtype, subsubtype, description, cost, start_date, end_date) VALUES (?,?,?,?,?,?,?,?,?)'
+                    console.log(params7)
+
+                    connection.query(sql7, params7, function (err, result) {
+                        if (err)
+                            console.log(err);
+                        else {
+                            console.log(result);
+                            if (result.insertId)
+                                response.send(String(result.insertId));
+                            else
+                                response.send("-1");
+                        }
+                    })
+                }
+
                 else {
                     let params2 = [id_user]
                     let sql2 = 'SELECT kilometers_car, year_car FROM autoMate.user WHERE id_user=?'
@@ -294,6 +318,7 @@ app.post("/mantenimiento", (request, response) => {
                             if (data_type === "Km") {
                                 end_date = calculoEndDayKm(today, kilometers_car, data)
                             }
+
                             else {
                                 end_date = calculoEndDayITV(today, year_car)
                             }
