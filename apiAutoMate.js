@@ -153,14 +153,8 @@ app.put("/usuario",
 app.get("/gastos", 
         function(request, response)
         { 
-            let sql;
-            if (request.query.id_user != null && request.query.type != null)
-                sql = `SELECT type, SUM(cost) FROM maintenance WHERE id_user =${request.query.id_user} 
-                       AND type = "${request.query.type}"`;
-            else
-                sql = `SELECT SUM(cost) FROM maintenance WHERE id_user = ${request.query.id_user}`;
-            
-            console.log(sql)
+            let sql = `SELECT type, SUM(cost) FROM maintenance WHERE id_user=${request.query.id_user} 
+                       GROUP BY type`
     
             connection.query(sql, function (err, result)
             {
@@ -173,7 +167,6 @@ app.get("/gastos",
             })
         }
 );
-
 
                 
 app.listen(puerto);
