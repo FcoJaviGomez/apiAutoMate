@@ -52,7 +52,7 @@ app.post("/registro",
                        provisional_password, provisional_date) VALUES ("${request.body.name}", 
                        "${request.body.last_name}", "${request.body.email}", "${request.body.password}", 
                        ${request.body.kilometers_car}, ${request.body.year_car}, 
-                       "${rString}", "${request.body.provisional_date}")`
+                       "${request.body.provisional_password}", "${request.body.provisional_date}")`
 
         console.log(sql);
         connection.query(sql, function (err, result) {
@@ -150,14 +150,9 @@ app.put("/usuario",
 
 app.get("/gastos",
     function (request, response) {
-        let sql;
-        if (request.query.id_user != null && request.query.type != null)
-            sql = `SELECT type, SUM(cost) FROM maintenance WHERE id_user =${request.query.id_user} 
-                       AND type = "${request.query.type}"`;
-        else
-            sql = `SELECT SUM(cost) FROM maintenance WHERE id_user = ${request.query.id_user}`;
-
-        console.log(sql)
+        
+        let sql = `SELECT type, SUM(cost) FROM maintenance WHERE id_user=${request.query.id_user} 
+                       GROUP BY type`
 
         connection.query(sql, function (err, result) {
             if (err) {
