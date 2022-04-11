@@ -46,7 +46,7 @@ app.post("/registro",
     function (request, response) {
         console.log(request.body);
 
-        
+
 
         let sql = `INSERT INTO user (name, last_name, email, password, kilometers_car, year_car, 
                        provisional_password, provisional_date) VALUES ("${request.body.name}", 
@@ -73,13 +73,16 @@ app.post("/registro",
 app.post("/login",
     function (request, response) {
         console.log(request.body);
-
+        let params = [
+            request.body.email,
+            request.body.password
+        ]
         let sql = `SELECT id_user, name, last_name, email, kilometers_car, year_car FROM user 
-                      WHERE email= "${request.body.email}" AND password= "${request.body.password}"`
+                      WHERE email= ? AND password= ?`
 
         console.log(sql)
 
-        connection.query(sql, function (err, result) {
+        connection.query(sql, params, function (err, result) {
             if (err) {
                 console.log(err);
             }
@@ -200,8 +203,25 @@ app.get('/mantenimiento', (request, response) => {
     let sql;
     let id_user = request.query.id_user
     console.log(id_user);
-    sql = `SELECT * FROM maintenance WHERE id_user = "${id_user}" ORDER BY end_date ASC `
+    let params = [id_user]
+    sql = `SELECT * FROM maintenance WHERE id_user = ? AND date(now()) < end_date ORDER BY end_date ASC `
     connection.query(sql, (err, result) => {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            response.send(result)
+        }
+    })
+})
+
+app.get('/historial', (request, response) => {
+    let sql;
+    let id_user = request.query.id_user
+    console.log(id_user);
+    let params = [id_user]
+    sql = `SELECT * FROM maintenance WHERE id_user = ? AND date(now()) > end_date ORDER BY end_date ASC `
+    connection.query(sql, params, (err, result) => {
         if (err) {
             console.log(err)
         }
@@ -215,8 +235,9 @@ app.get('/mantenimientoHome', (request, response) => {
     let sql;
     let id_user = request.query.id_user
     console.log(id_user);
-    sql = `SELECT * FROM maintenance WHERE id_user = "${id_user}" ORDER BY end_date ASC LIMIT 1`
-    connection.query(sql, (err, result) => {
+    let params = [id_user]
+    sql = `SELECT * FROM maintenance WHERE id_user = ? AND date(now()) < end_date ORDER BY end_date ASC LIMIT 1`
+    connection.query(sql, params, (err, result) => {
         if (err) {
             console.log(err)
         }
@@ -369,22 +390,22 @@ app.put('/recuperacion',
             return result;
         }
         let rString = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@?');
-        
+
         console.log(rString)
 
         let sql = `UPDATE user SET provisional_password = "${rString}", password = "${rString}" WHERE email= "${req.body.email}"`
 
         console.log(sql)
 
-        connection.query(sql, (err, result)=>{
+        connection.query(sql, (err, result) => {
 
-            if(err){
+            if (err) {
                 console.log(err);
             }
-            else{
+            else {
                 console.log(result);
                 res.send(result);
-                
+
             }
         })
     }
