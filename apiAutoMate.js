@@ -153,7 +153,7 @@ app.put("/usuario",
 
 app.get("/gastos",
     function (request, response) {
-        
+
         let sql = `SELECT type, SUM(cost) FROM maintenance WHERE id_user=${request.query.id_user} 
                        GROUP BY type`
 
@@ -200,7 +200,7 @@ app.get('/mantenimiento', (request, response) => {
     console.log(id_user);
     let params = [id_user]
     sql = `SELECT * FROM maintenance WHERE id_user = ? AND date(now()) < end_date ORDER BY end_date ASC `
-    connection.query(sql, (err, result) => {
+    connection.query(sql, params, (err, result) => {
         if (err) {
             console.log(err)
         }
