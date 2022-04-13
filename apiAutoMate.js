@@ -1,8 +1,10 @@
+const nodemailer = require("nodemailer");
 let express = require("express");
 let app = express();
 let cors = require('cors')
 let mysql = require("mysql2");
-const { request, response } = require("express");
+// const mailer = require('./mailer')
+// const nodemailer= require("nodemailer")
 let puerto = process.env.PORT || 3000;
 
 let connection = mysql.createConnection(
@@ -20,6 +22,24 @@ connection.connect(function (error) {
         console.log('Conexion correcta.');
     }
 });
+
+
+const transporter = nodemailer.createTransport({
+
+    host: "smtp.gmail.com",
+    // port: 465,
+    // secure: true,
+    auth: {
+        user:"codenotchers@gmail.com",
+        pass: "ntlasozosxzbtqyb"
+        // pass: "pichones"
+    },
+    tls:{
+        rejectUnauthorized: false,
+    }
+
+})
+
 
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
@@ -334,20 +354,52 @@ app.post("/mantenimiento", (request, response) => {
 );
 
 app.put('/recuperacion',
-    (req, res) => {
+    (req, response) => {
 
-        console.log(req.body)
+        console.log(req.body[0].email)
 
         function randomString(length, chars) {
             var result = '';
-            for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+            for (var i = length; i > 0; --i) 
+                    result += chars[Math.floor(Math.random() * chars.length)];
             return result;
         }
         let rString = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@?');
         
-        console.log(rString)
+        // console.log(rString)
+        
 
-        let sql = `UPDATE user SET provisional_password = "${rString}", password = "${rString}" WHERE email= "${req.body.email}"`
+        //  transporter.sendMail({
+        //     from   : '"AutoMate password recovery" <codenotchers@gmail.com>',
+        //     to     : `"${req.body.email}"`,
+        //     subject: 'Cambio de contraseña',
+        //     text  : `"Parece que has perdido la contraseña, no te preocupes, de momento utiliza esta ${rString} para poder loggearte, pero recuerda cambiarla cuando accedas a AutoMate"<br>`
+        //     })
+        
+
+        let mailOptions = {
+            from   : 'AutoMate password recovery<codenotchers@gmail.com>',
+            to     : `${req.body[0].email}`,
+            subject: 'Cambio de contraseña',
+            text  : `Parece que has perdido la contraseña, no te preocupes, de momento utiliza esta ${rString} para poder loggearte, pero recuerda cambiarla cuando accedas a AutoMate`
+        };
+            console.log(req.body[0].email)
+            console.log(mailOptions)
+        transporter.sendMail(mailOptions, (error, res) =>  {
+            if(!error) {
+              console.log('Email enviado')
+              salida = { error: false, code: 200, mensaje: res};
+              response.send(salida)
+        
+            }else {
+                console.log(error)
+              salida = { error: true, code: 200, mensaje: error };
+              response.send(salida);
+            }
+        })
+
+
+        let sql = `UPDATE user SET provisional_password = "${rString}", password = "${rString}" WHERE email= "${req.body[0].email}"`
 
         console.log(sql)
 
@@ -358,7 +410,7 @@ app.put('/recuperacion',
             }
             else{
                 console.log(result);
-                res.send(result);
+                response.send(result);
                 
             }
         })
@@ -398,4 +450,4 @@ function calculoEndDayITV(today, year_car) {
     return endDay
 }
 
-app.listen(puerto);
+app.listen(puerto)
