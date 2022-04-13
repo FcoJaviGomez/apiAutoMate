@@ -173,8 +173,8 @@ app.put("/usuario",
 
 app.get("/gastos",
     function (request, response) {
-
-        let sql = `SELECT type, SUM(cost) FROM maintenance WHERE id_user=${request.query.id_user} 
+        
+        let sql = `SELECT type, SUM(cost) AS cost FROM maintenance WHERE id_user=${request.query.id_user} 
                        GROUP BY type`
 
         connection.query(sql, function (err, result) {
