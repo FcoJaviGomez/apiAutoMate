@@ -49,10 +49,10 @@ app.post("/registro",
 
 
         let sql = `INSERT INTO user (name, last_name, email, password, kilometers_car, year_car, 
-                       provisional_password, provisional_date) VALUES ("${request.body.name}", 
+                       provisional_password, provisional_date, first_log) VALUES ("${request.body.name}", 
                        "${request.body.last_name}", "${request.body.email}", "${request.body.password}", 
                        ${request.body.kilometers_car}, ${request.body.year_car}, 
-                       "${request.body.provisional_password}", "${request.body.provisional_date}")`
+                       "${request.body.provisional_password}", "${request.body.provisional_date}",${1})`
 
         console.log(sql);
         connection.query(sql, function (err, result) {
@@ -77,7 +77,7 @@ app.post("/login",
             request.body.email,
             request.body.password
         ]
-        let sql = `SELECT id_user, name, last_name, email, kilometers_car, year_car FROM user 
+        let sql = `SELECT id_user, name, last_name, email, kilometers_car, year_car, first_log FROM user 
                       WHERE email= ? AND password= ?`
 
         console.log(sql)
@@ -127,7 +127,9 @@ app.put("/usuario",
         request.body.year_car,
         request.body.provisional_password,
         request.body.provisional_date,
-        request.body.id_user]
+            0,
+        request.body.id_user
+        ]
 
         console.log(request.body.provisional_password)
 
@@ -138,7 +140,8 @@ app.put("/usuario",
             "kilometers_car = COALESCE(?, kilometers_car) , " +
             "year_car = COALESCE(?, year_car) , " +
             "provisional_password = COALESCE(?, provisional_password) , " +
-            "provisional_date = COALESCE(?, provisional_date) WHERE id_user = ?";
+            "provisional_date = COALESCE(?, provisional_date) , " +
+            "first_log = COALESCE(?, first_log) WHERE id_user = ?";
         console.log(sql);
         connection.query(sql, params, function (err, result) {
             if (err)
