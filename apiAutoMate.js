@@ -30,11 +30,11 @@ const transporter = nodemailer.createTransport({
     // port: 465,
     // secure: true,
     auth: {
-        user:"codenotchers@gmail.com",
+        user: "codenotchers@gmail.com",
         pass: "ntlasozosxzbtqyb"
         // pass: "pichones"
     },
-    tls:{
+    tls: {
         rejectUnauthorized: false,
     }
 
@@ -176,7 +176,7 @@ app.put("/usuario",
 
 app.get("/gastos",
     function (request, response) {
-        
+
         let sql = `SELECT type, SUM(cost) AS cost FROM maintenance WHERE id_user=${request.query.id_user} 
                        GROUP BY type`
 
@@ -228,6 +228,7 @@ app.get('/mantenimiento', (request, response) => {
             console.log(err)
         }
         else {
+            console.log("pepe", result);
             response.send(result)
         }
     })
@@ -404,14 +405,14 @@ app.put('/recuperacion',
 
         function randomString(length, chars) {
             var result = '';
-            for (var i = length; i > 0; --i) 
-                    result += chars[Math.floor(Math.random() * chars.length)];
+            for (var i = length; i > 0; --i)
+                result += chars[Math.floor(Math.random() * chars.length)];
             return result;
         }
         let rString = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@?');
-        
+
         // console.log(rString)
-        
+
 
         //  transporter.sendMail({
         //     from   : '"AutoMate password recovery" <codenotchers@gmail.com>',
@@ -419,26 +420,26 @@ app.put('/recuperacion',
         //     subject: 'Cambio de contraseña',
         //     text  : `"Parece que has perdido la contraseña, no te preocupes, de momento utiliza esta ${rString} para poder loggearte, pero recuerda cambiarla cuando accedas a AutoMate"<br>`
         //     })
-        
+
 
         let mailOptions = {
-            from   : 'AutoMate password recovery<codenotchers@gmail.com>',
-            to     : `${req.body[0].email}`,
+            from: 'AutoMate password recovery<codenotchers@gmail.com>',
+            to: `${req.body[0].email}`,
             subject: 'Cambio de contraseña',
-            text  : `Parece que has perdido la contraseña, no te preocupes, de momento utiliza esta ${rString} para poder loggearte, pero recuerda cambiarla cuando accedas a AutoMate`
+            text: `Parece que has perdido la contraseña, no te preocupes, de momento utiliza esta ${rString} para poder loggearte, pero recuerda cambiarla cuando accedas a AutoMate`
         };
-            console.log(req.body[0].email)
-            console.log(mailOptions)
-        transporter.sendMail(mailOptions, (error, res) =>  {
-            if(!error) {
-              console.log('Email enviado')
-              salida = { error: false, code: 200, mensaje: res};
-              response.send(salida)
-        
-            }else {
+        console.log(req.body[0].email)
+        console.log(mailOptions)
+        transporter.sendMail(mailOptions, (error, res) => {
+            if (!error) {
+                console.log('Email enviado')
+                salida = { error: false, code: 200, mensaje: res };
+                response.send(salida)
+
+            } else {
                 console.log(error)
-              salida = { error: true, code: 200, mensaje: error };
-              response.send(salida);
+                salida = { error: true, code: 200, mensaje: error };
+                response.send(salida);
             }
         })
 
@@ -455,7 +456,7 @@ app.put('/recuperacion',
             else {
                 console.log(result);
                 response.send(result);
-                
+
             }
         })
     }
@@ -473,13 +474,13 @@ function calculoEndDayKm(today, kilometersWeek, kilometersManteinance) {
 }
 
 function calculoEndDayDays(today, dayNum) {
-    let endDay = new Date(today.toDateString())
+    let endDay = new Date(today.getTime())
     endDay.setDate(today.getDate() + dayNum)
     return endDay
 }
 
 function calculoEndDayITV(today, year_car) {
-    let endDay = new Date(today.toDateString())
+    let endDay = new Date(today.getTime())
 
     if (today.getFullYear() >= year_car && year_car > today.getFullYear() - 4) {
         endDay.setDate(today.getDate() + 1460)
