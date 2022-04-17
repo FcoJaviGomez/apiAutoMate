@@ -92,6 +92,7 @@ app.post("/registro",
 
 app.post("/login",
     function (request, response) {
+        let respuesta = true
         console.log(request.body);
         let params = [
             request.body.email,
@@ -105,6 +106,8 @@ app.post("/login",
         connection.query(sql, params, function (err, result) {
             if (err) {
                 console.log(err);
+                respuesta = false
+                response.send(respuesta)
             }
             else {
                 response.send(result);
@@ -138,10 +141,10 @@ app.put("/usuario",
         console.log(request.body);
 
 
-        for(let atributo in request.body){
+        for (let atributo in request.body) {
 
-            if(request.body[atributo]===''){
-                request.body[atributo]===null
+            if (request.body[atributo] === '') {
+                request.body[atributo] === null
             }
         }
 
@@ -185,29 +188,29 @@ app.put("/usuario/password",
     function (request, response) {
 
 
-        let respuesta= {mensaje: true}
+        let respuesta = true
         let sql = `SELECT * FROM user WHERE id_user=${request.body.id_user} AND password= ${request.body.contrasena}`;
 
         connection.query(sql, function (err, result) {
             if (err)
                 console.log(err);
             else {
-                if(result.length===0){
-                    respuesta.mensaje = false
+                if (result.length === 0) {
+                    respuesta = false
                     response.send(respuesta)
                 }
-                else{
+                else {
                     let sql = `UPDATE user SET password = ${request.body.contrasenaNueva} WHERE id_user=${request.body.id_user}`
 
                     connection.query(sql, function (err, result) {
                         if (err)
                             console.log(err);
                         else {
-                            respuesta.mensaje = true
+                            respuesta = true
                             response.send(respuesta)
                         }
                     })
-                    
+
                 }
             }
         })
@@ -231,8 +234,6 @@ app.get("/gastos",
     }
 );
 
-
-
 app.get('/home-logged',
     function (req, res) {
 
@@ -255,7 +256,6 @@ app.get('/home-logged',
             }
         })
     })
-
 
 app.get('/mantenimiento', (request, response) => {
     let sql;
