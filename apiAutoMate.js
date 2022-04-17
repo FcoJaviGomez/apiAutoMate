@@ -373,7 +373,7 @@ app.post("/mantenimiento", (request, response) => {
 
                 else if (data_type === null) {
                     console.log("holaaa", request.body);
-                    end_date = request.body.end_date
+                    end_date = request.body.end_date + " 10:00:00"
                     console.log(end_date);
                     let params7 = [id_user, name, type, subtype, subsubtype, description, cost, today, end_date]
                     let sql7 = 'INSERT INTO maintenance (id_user, name, type, subtype, subsubtype, description, cost, start_date, end_date) VALUES (?,?,?,?,?,?,?,?,?)'
