@@ -111,6 +111,16 @@ app.get("/usuario",
 app.put("/usuario",
     function (request, response) {
         console.log(request.body);
+
+        for(let atributo in request.body){
+
+            if(request.body[atributo]===''){
+                request.body[atributo]===null
+            }
+        }
+
+        console.log(request.body)
+
         let params = [request.body.name,
         request.body.last_name,
         request.body.email,
@@ -139,6 +149,38 @@ app.put("/usuario",
     }
 );
 
+app.put("/usuario/password",
+    function (request, response) {
+
+
+        let respuesta= {mensaje: true}
+        let sql = `SELECT * FROM user WHERE id_user=${request.body.id_user} AND password= ${request.body.contrasena}`;
+
+        connection.query(sql, function (err, result) {
+            if (err)
+                console.log(err);
+            else {
+                if(result.length===0){
+                    respuesta.mensaje = false
+                    response.send(respuesta)
+                }
+                else{
+                    let sql = `UPDATE user SET password = ${request.body.contrasenaNueva} WHERE id_user=${request.body.id_user}`
+
+                    connection.query(sql, function (err, result) {
+                        if (err)
+                            console.log(err);
+                        else {
+                            respuesta.mensaje = true
+                            response.send(respuesta)
+                        }
+                    })
+                    
+                }
+            }
+        })
+    }
+);
 
 app.get("/gastos",
     function (request, response) {
@@ -254,7 +296,6 @@ app.post("/mantenimiento", (request, response) => {
     })
 }
 );
-
 
 
 app.listen(puerto);
