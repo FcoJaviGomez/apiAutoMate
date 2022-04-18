@@ -504,7 +504,7 @@ app.put('/recuperacion',
 
 
 function calculoEndDayKm(today, kilometersWeek, kilometersManteinance) {
-    let endDay = new Date(today.toDateString())
+    let endDay = new Date(today.getTime())
     let kilometersDay = Math.round(kilometersWeek / 7)
     let dayNum = Math.round(kilometersManteinance / kilometersDay)
 
