@@ -441,7 +441,7 @@ app.post("/mantenimiento", (request, response) => {
 app.put('/recuperacion',
     (req, response) => {
 
-        console.log(req.body[0].email)
+        console.log(req.body.email)
 
         function randomString(length, chars) {
             var result = '';
@@ -463,20 +463,20 @@ app.put('/recuperacion',
 
 
         let mailOptions = {
-            from: 'AutoMate password recovery<codenotchers@gmail.com>',
-            to: `${req.body[0].email}`,
+            from   : 'AutoMate password recovery<codenotchers@gmail.com>',
+            to     : `${req.body.email}`,
             subject: 'Cambio de contraseña',
             text: `Parece que has perdido la contraseña, no te preocupes, de momento utiliza esta ${rString} para poder loggearte, pero recuerda cambiarla cuando accedas a AutoMate`
         };
-        console.log(req.body[0].email)
-        console.log(mailOptions)
-        transporter.sendMail(mailOptions, (error, res) => {
-            if (!error) {
-                console.log('Email enviado')
-                salida = { error: false, code: 200, mensaje: res };
-                response.send(salida)
-
-            } else {
+            console.log(req.body.email)
+            console.log(mailOptions)
+        transporter.sendMail(mailOptions, (error, res) =>  {
+            if(!error) {
+              console.log('Email enviado')
+              salida = { error: false, code: 200, mensaje: res};
+              response.send(salida)
+        
+            }else {
                 console.log(error)
                 salida = { error: true, code: 200, mensaje: error };
                 response.send(salida);
@@ -484,7 +484,7 @@ app.put('/recuperacion',
         })
 
 
-        let sql = `UPDATE user SET provisional_password = "${rString}", password = "${rString}" WHERE email= "${req.body[0].email}"`
+        let sql = `UPDATE user SET provisional_password = "${rString}", password = "${rString}" WHERE email= "${req.body.email}"`
 
         console.log(sql)
 
