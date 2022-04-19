@@ -237,7 +237,7 @@ app.get("/gastos",
 app.get('/home-logged',
     function (req, res) {
 
-        let id = parseInt(Math.random() * 10);
+        let id = parseInt(Math.random() * (11 - 1) + 1);
 
         console.log(id)
 
