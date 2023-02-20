@@ -451,32 +451,21 @@ app.put('/recuperacion',
         }
         let rString = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@?');
 
-        // console.log(rString)
-
-
-        //  transporter.sendMail({
-        //     from   : '"AutoMate password recovery" <codenotchers@gmail.com>',
-        //     to     : `"${req.body.email}"`,
-        //     subject: 'Cambio de contraseña',
-        //     text  : `"Parece que has perdido la contraseña, no te preocupes, de momento utiliza esta ${rString} para poder loggearte, pero recuerda cambiarla cuando accedas a AutoMate"<br>`
-        //     })
-
-
         let mailOptions = {
-            from   : 'AutoMate password recovery<codenotchers@gmail.com>',
-            to     : `${req.body.email}`,
+            from: 'AutoMate password recovery<codenotchers@gmail.com>',
+            to: `${req.body.email}`,
             subject: 'Cambio de contraseña',
             text: `Parece que has perdido la contraseña, no te preocupes, de momento utiliza esta ${rString} para poder loggearte, pero recuerda cambiarla cuando accedas a AutoMate`
         };
-            console.log(req.body.email)
-            console.log(mailOptions)
-        transporter.sendMail(mailOptions, (error, res) =>  {
-            if(!error) {
-              console.log('Email enviado')
-              salida = { error: false, code: 200, mensaje: res};
-              response.send(salida)
-        
-            }else {
+        console.log(req.body.email)
+        console.log(mailOptions)
+        transporter.sendMail(mailOptions, (error, res) => {
+            if (!error) {
+                console.log('Email enviado')
+                salida = { error: false, code: 200, mensaje: res };
+                response.send(salida)
+
+            } else {
                 console.log(error)
                 salida = { error: true, code: 200, mensaje: error };
                 response.send(salida);
