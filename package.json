@@ -1,7 +1,6 @@
 {
     "scripts": {
-        "start": "node apiAutoMate.js",
-        "build": "run build"
+        "start": "node apiAutoMate.js"
     },
     "dependencies": {
         "cors": "^2.8.5",
